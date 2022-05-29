@@ -84,7 +84,6 @@ def updateQuestionList(questionDataBase, skillDataBase):
 def getQuestionBank(subjectID, skillDatabase, questionDatabase):
     tempSkillDatabase = skillDatabase.loc[skillDatabase["Subject Category ID"] == subjectID]
     tempSkillDatabase = tempSkillDatabase.sort_values(by="Skill Mastery")
-    print(tempSkillDatabase)
     questionBank = pd.DataFrame(columns = list(questionDatabase.columns))
     # Populating the question bank
     for row in tempSkillDatabase.iloc:
@@ -92,7 +91,8 @@ def getQuestionBank(subjectID, skillDatabase, questionDatabase):
         for q in questionList:
             if not(q in questionBank["Question ID"]):
                 #print(questionDatabase.loc[questionDatabase['Question ID'] == q])
-                questionBank = questionBank.append(questionDatabase.loc[questionDatabase['Question ID'] == q])
+                #questionBank = questionBank.append(questionDatabase.loc[questionDatabase['Question ID'] == q])
+                questionBank = pd.concat([questionBank,questionDatabase.loc[questionDatabase['Question ID'] == q]])
     return(questionBank)
     
 def startQuestionAttempts(controller, subjectID, questionBank, skillDatabase, questionDatabase):
@@ -254,10 +254,6 @@ class StudyApp:
                 value=2))
             self.root.skillsRadioButtons[len(self.root.skillsRadioButtons)-1].grid(row=i, column=3)
             i = i + 1
-        
-    def processSkill(self, skill, level):
-        # need to add skill attemp to database
-        print("test")
     
     def getScaledImage(self, imagePath):
         image = Image.open(imagePath)
